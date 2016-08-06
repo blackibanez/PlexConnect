@@ -6,31 +6,41 @@
   <body>
     <scroller id="Show_Grid">
       <header>
-        <simpleHeader>
-          <title>{{VAL(title1)}}</title>
-          <subtitle>{{VAL(title2)}}</subtitle>
-        </simpleHeader>
+          <imageHeader>
+           <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=600|1080=900)}}, 0" required="true">
+          {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{VAL(title1)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexGrid"]\
+              })}})}})}}
+          </image>
+          </imageHeader>
       </header>
       <items>
-        <grid columnCount="7" id="grid_0">
+        <collectionDivider alignment="left" accessibilityLabel="TV Shows">
+            <title>{{TEXT(All TV Shows)}} ({{VAL(size)}})</title>
+        </collectionDivider>
+
+        <grid columnCount="5" id="grid_0">
           <items>
-            <moviePoster id="{{VAL(key)}}" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}"
+            <goldenPoster id="{{VAL(key)}}" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}"
                         onPlay="atv.loadURL('{{URL(key:::PlexConnect=TVShow_Season)}}')"
                         onSelect="atv.loadURL('{{URL(key:::PlexConnect=TVShow_Season)}}')"
-                        onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_Menu)}}')">
+                        onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuShow)}}')">
               {{COPY(Directory)}}
               <title>{{VAL(title)}}</title>
-              <image>{{IMAGEURL(thumb::384)}}</image>
+              <image>{{IMAGEURL(thumb::768)}}</image>
               <defaultImage>resource://Poster.png</defaultImage>
               <badgeCount>{{unwatchedCountGrid(leafCount:0:viewedLeafCount:0)}}</badgeCount>{{CUT($showunwatched::False=CUT|True=)}}
-            </moviePoster>{{CUT(Directory/title:CUT:=)}}
+            </goldenPoster>{{CUT(Directory/title:CUT:=)}}
 
-            <moviePoster id="none">
+            <goldenPoster id="none">
               <title>{{TEXT(No Unwatched Shows)}}</title>
               <defaultImage>resource://Poster.png</defaultImage>
-            </moviePoster>{{CUT(Directory/title::=CUT)}}
+            </goldenPoster>{{CUT(Directory/title::=CUT)}}
           </items>
         </grid>
+
       </items>
     </scroller>
   </body>

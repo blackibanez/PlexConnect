@@ -6,15 +6,21 @@
   <body>
     <scroller id="single_artwork_select">
       <header>
-        <simpleHeader>
-          <title>{{VAL(title2)}}</title>
-          <subtitle>{{TEXT(Select Poster)}}</subtitle>
-        </simpleHeader>
+        <imageHeader>
+         <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=550|1080=825)}}, 0" required="true">
+        {{URL(:/fanartcache/{{getBackground({{EVAL({\
+            'title'       : "{{EVAL(quote_plus("{{VAL(title2)}}"))}}",\
+            'subtitle'    : "{{EVAL(quote_plus("{{TEXT(Select Poster)}}"))}}",\
+            'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+            'layers'      : ["PlexSubGrid"]\
+            })}})}})}}
+        </image>
+        </imageHeader>
       </header>
-     
+
       {{ADDXML(posters::/library/metadata/{{VAL(key)}}/posters)}}
       {{VAR(key:key)}}
-     
+
      <items>
         <collectionDivider alignment="left">
           <title></title>
@@ -35,7 +41,7 @@
             </shelfSection>
           </sections>
         </shelf>
-        
+
         <collectionDivider alignment="left">
           <title></title>
         </collectionDivider>

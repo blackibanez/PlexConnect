@@ -2,40 +2,50 @@
   <head>
     <script src="{{URL(:/js/utils.js)}}" />
   </head>
-  
+
   <body>
-    <scroller id="com.sample.movie-grid">
-    {{CUT(size:CUT:0=CUT|1=)}}
+      {{VAR(items:NoKey:FALSE)}}
+
+    <scroller id="Movie_Grid">
       <header>
-        <simpleHeader>
-          <title>{{VAL(title1)}}</title>
-          <subtitle>{{VAL(title2)}}</subtitle>
-        </simpleHeader>
+          <imageHeader>
+           <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=600|1080=900)}}, 0" required="true">
+          {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{VAL(title1)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexGrid"]\
+              })}})}})}}
+          </image>
+          </imageHeader>
       </header>
-      <items>
-        <grid columnCount="7" id="grid_0">
-          <items>
-            <moviePoster id="{{VAL(key)}}" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}"
-                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
-                             onSelect="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=Movie_PrePlay{{VAL($fanart::Hide=|Show=_Fanart)}})}}')"
-                             onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuVideo)}}')">
-              {{COPY(Video)}}
-              <title>{{VAL(title)}}</title>
-              <subtitle>{{VAL(year:&#x00AD;)}}</subtitle>
-              <image>{{IMAGEURL(thumb::384)}}</image>
-              <defaultImage>resource://Poster.png</defaultImage>
-            </moviePoster>
-          </items>
-        </grid>
+
+       <items>
+         <collectionDivider alignment="left" accessibilityLabel="TV Shows">
+             <title>All Movies ({{VAL(size)}})</title>
+         </collectionDivider>
+
+          <grid columnCount="5" id="grid_0">
+              <items>
+                  <goldenPoster id="{{VAL(key)}}" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}"
+                      onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
+                      onSelect="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=Movie_PrePlay)}}')"
+                      onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuVideo)}}')">
+                      {{COPY(Video)}}
+                      <title>{{VAL(title)}} ({{VAL(year:&#x00AD;)}})</title>
+                      <image>{{IMAGEURL(thumb::768)}}</image>
+                      <defaultImage>resource://Poster.png</defaultImage>
+                  </goldenPoster>
+              </items>
+          </grid>
       </items>
     </scroller>
-    
+
     <!--No Items Available-->
     <dialog id="com.sample.error-dialog">
     {{CUT(size::0=|1=CUT)}}
       <title>PlexConnect</title>
       <description>{{TEXT(Plex Media Server: No Items Available)}}</description>
     </dialog>
-    
+
   </body>
 </atv>

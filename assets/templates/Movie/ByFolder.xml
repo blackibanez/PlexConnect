@@ -2,51 +2,20 @@
   <head>
     <script src="{{URL(:/js/utils.js)}}" />
   </head>
-  
-  <body>
-    <scroller id="MovieGrid" volatile="true" onVolatileReload="atv.loadAndSwapURL('{{URL(:::PlexConnect=Movie_ByFolder)}}')">
-      <header>
-        <simpleHeader>
-          <title>{{VAL(title1)}}</title>
-          <subtitle>{{VAL(title2)}}</subtitle>
-        </simpleHeader>
-      </header>
-      <items>
-        <grid columnCount="7" id="grid_0">
-          <items>
-            <moviePoster id="{{VAL(key)}}" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}" 
-                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Movie_ByFolder)}}')"
-                             onSelect="atv.loadURL('{{URL(key:::PlexConnect=Movie_ByFolder)}}')">
-              {{COPY(Directory)}}
-              <title>{{VAL(title)}}</title>
-              <subtitle>{{VAL(year:&#x00AD;)}}</subtitle>
-              <image>{{URL(:/thumbnails/Folder.png)}}</image>
-              <defaultImage>resource://Poster.png</defaultImage>
-            </moviePoster>
-            
-            <moviePoster id="{{VAL(key)}}" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}"
-                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
-                             onSelect="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=Movie_PrePlay{{VAL($fanart::Hide=|Show=_Fanart)}})}}')">
-              {{COPY(Video)}}
-              <title>{{VAL(title)}}</title>
-              <subtitle>{{VAL(year:&#x00AD;)}}</subtitle>
-              <image>{{IMAGEURL(thumb::768)}}</image>
-              <defaultImage>resource://Poster.png</defaultImage>
-            </moviePoster>
-          </items>
-        </grid>
-      </items>
-    </scroller>
-  </body>{{CUT($movieview::Detailed=CUT|Grid=|List=CUT)}}
-  
-  
+
 <body>
-    <listWithPreview id="MovieList" volatile="true" onVolatileReload="atv.loadAndSwapURL('{{URL(:::PlexConnect=Movie_ByFolder)}}')">
+    <itemCollectionWithImageHeader id="MovieList" volatile="true" onVolatileReload="atv.loadAndSwapURL('{{URL(:::PlexConnect=Movie_ByFolder)}}')">
       <header>
-        <simpleHeader>
-          <title>{{VAL(title1)}}</title>
-          <subtitle>{{VAL(title2)}}</subtitle>
-        </simpleHeader>
+        <imageHeader>
+	      <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=552|1080=828)}}, 0" required="true">
+	    {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{VAL(title2)}}"))}}",\
+              'subtitle'    : "{{EVAL(quote_plus("{{VAL(title1)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexSubList"]\
+              })}})}})}}
+              </image>
+	    </imageHeader>
       </header>
 
       <menu>
@@ -58,46 +27,54 @@
                              onSelect="atv.loadURL('{{URL(key:::PlexConnect=Movie_ByFolder)}}')">
                 {{COPY(Directory)}}
                 <label>{{VAL(title)}}</label>
-                <image>{{URL(:/thumbnails/Folder.png)}}</image>
+                <image>{{URL(:/thumbnails/Images/Icons/Folder.png)}}</image>
                 <defaultImage>resource://Poster.png</defaultImage>
                 <preview>
                   <crossFadePreview>
-                    <image>{{URL(:/thumbnails/Folder.png)}}</image>
+                    <image>{{URL(:/thumbnails/Images/Icons/Folder.png)}}</image>
                   </crossFadePreview>
                 </preview>
               </twoLineEnhancedMenuItem>
-              
+
               <twoLineMenuItem id="{{VAL(key)}}"
-                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
-                             onSelect="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=Movie_PrePlay{{VAL($fanart::Hide=|Show=_Fanart)}})}}')"
+                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video_Pause&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
+                             onSelect="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=Movie_PrePlay)}}')"
                              onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuVideo)}}')">
                 {{COPY(Video)}}
                 <label>{{VAL(title)}}</label>
                 <label2>{{durationToString(NoKey:Video:duration)}}</label2>
                 <accessories>
-                  <unplayedDot/>{{CUT(viewOffset)}}
-                  <partiallyPlayedDot/>
-                </accessories>{{CUT(viewCount)}}
-                <preview>
-                  <crossFadePreview>
-                    <image>{{IMAGEURL(thumb::768)}}</image>
-                  </crossFadePreview>
-                </preview>
+                  <unplayedDot/>{{CUT(viewCount)}}{{CUT(viewOffset)}}
+                  <partiallyPlayedDot/>{{CUT(viewOffset:CUT:=)}}
+                </accessories>{{CUT(^aTVFirmwareVersion::=|6.0=CUT)}}
+                <accessories>
+                  <progressBar percentage="0"/>{{CUT(Video/viewCount)}}{{CUT(Video/viewOffset)}}
+                  <progressBar percentage="{{EVAL({{VAL(Video/viewOffset:0)}} * 100 / {{VAL(Video/duration:1)}})}}"/>{{CUT(Video/viewOffset:CUT:=)}}
+                  <progressBar percentage="100"/>{{CUT(Video/viewCount:CUT:=)}}{{CUT(Video/viewOffset)}}
+                </accessories>{{CUT(^aTVFirmwareVersion:CUT:=CUT|6.0=)}}
+                <image>{{IMAGEURL(thumb::384)}}</image>
+                <defaultImage>resource://Poster.png</defaultImage>
               </twoLineMenuItem>
             </items>
           </menuSection>
         </sections>
       </menu>
-    </listWithPreview>
-  </body>{{CUT($movieview::Detailed=CUT|Grid=CUT|List=)}}
-  
+    </itemCollectionWithImageHeader>
+  </body>{{CUT($movieview::Detailed=CUT|List=|Grid=CUT)}}
+
   <body>
-    <listWithPreview id="Movie_DetailedList" volatile="true" onVolatileReload="atv.loadAndSwapURL('{{URL(:::PlexConnect=Movie_ByFolder)}}')">
+    <itemCollectionWithImageHeader id="Movie_DetailedList" volatile="true" onVolatileReload="atv.loadAndSwapURL('{{URL(:::PlexConnect=Movie_ByFolder)}}')">
       <header>
-        <simpleHeader>
-          <title>{{VAL(title1)}}</title>
-          <subtitle>{{VAL(title2)}}</subtitle>
-        </simpleHeader>
+        <imageHeader>
+	      <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=650|1080=975)}}, 0" required="true">
+	     {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{VAL(title2)}}"))}}",\
+              'subtitle'    : "{{EVAL(quote_plus("{{VAL(title1)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexSubList"]\
+              })}})}})}}
+	      </image>
+	    </imageHeader>
       </header>
 
       <menu>
@@ -109,18 +86,18 @@
                              onSelect="atv.loadURL('{{URL(key:::PlexConnect=Movie_ByFolder)}}')">
                 {{COPY(Directory)}}
                 <label>{{VAL(title)}}</label>
-                <image>{{URL(:/thumbnails/Folder.png)}}</image>
+                <image>{{URL(:/thumbnails/Images/Icons/Folder.png)}}</image>
                 <defaultImage>resource://Poster.png</defaultImage>
                 <preview>
                   <crossFadePreview>
-                    <image>{{URL(:/thumbnails/Folder.png)}}</image>
+                    <image>{{URL(:/thumbnails/Images/Icons/Folder.png)}}</image>
                   </crossFadePreview>
                 </preview>
               </twoLineEnhancedMenuItem>
-            
+
               <oneLineMenuItem id="{{VAL(key)}}"
-                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
-                             onSelect="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=Movie_PrePlay{{VAL($fanart::Hide=|Show=_Fanart)}})}}')"
+                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video_Pause&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
+                             onSelect="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=Movie_PrePlay)}}')"
                              onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuVideo)}}')">
                 {{COPY(Video)}}
                 <label>{{VAL(title)}}</label>
@@ -132,7 +109,7 @@
                   <keyedPreview>
                     <title>{{VAL(title)}}</title>
                     <summary>{{VAL(summary)}}</summary>
-                    <image>{{IMAGEURL(thumb::768)}}</image>
+                    <image>{{IMAGEURL(thumb::384)}}</image>
 										<metadataKeys>
 											<label>{{TEXT(Actors)}}</label>
 											<label>{{TEXT(Director)}}</label>
@@ -152,6 +129,48 @@
           </menuSection>
         </sections>
       </menu>
-    </listWithPreview>
-  </body>{{CUT($movieview::Detailed=|Grid=CUT|List=CUT)}}
+    </itemCollectionWithImageHeader>
+  </body>{{CUT($movieview::Detailed=|List=CUT|Grid=CUT)}}
+
+
+   <body>
+    <scroller id="MovieGrid" volatile="true" onVolatileReload="atv.loadAndSwapURL('{{URL(:::PlexConnect=Movie_ByFolder)}}')">
+      <header>
+	  <imageHeader>
+          <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=550|1080=825)}}, 0" required="true">
+	    {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{VAL(title2)}}"))}}",\
+              'subtitle'    : "{{EVAL(quote_plus("{{VAL(title1)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexSubGrid"]\
+              })}})}})}}
+	      </image>
+	    </imageHeader>
+	    </header>
+      <items>
+        <grid columnCount="5" id="grid_0">
+          <items>
+            <goldenPoster id="{{VAL(key)}}" featured="true" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}"
+                             onPlay="atv.loadURL('{{URL(key:::PlexConnect=Movie_ByFolder)}}')"
+                             onSelect="atv.loadURL('{{URL(key:::PlexConnect=Movie_ByFolder)}}')">
+              {{COPY(Directory)}}
+              <title>{{VAL(title)}}</title>
+              <image>{{URL(:/thumbnails/Grpahics/Icons/Folder.png)}}</image>
+              <defaultImage>resource://Poster.png</defaultImage>
+            </goldenPoster>
+
+            <goldenPoster id="{{VAL(key)}}" alwaysShowTitles="{{VAL($postertitles::Highlighted Only=false|Show All=true)}}"
+                          onPlay="atv.loadURL('{{URL(key:::PlexConnect=Play_Video_Pause&amp;PlexConnectRatingKey={{VAL(ratingKey)}})}}')"
+                          onSelect="atv.loadURL('{{URL(key:::includeExtras=1&amp;PlexConnect=Movie_PrePlay)}}')"
+                          onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuVideo)}}')">
+              {{COPY(Video)}}
+              <title>{{VAL(title)}}</title>
+              <image>{{IMAGEURL(thumb::768)}}</image>
+              <defaultImage>resource://Poster.png</defaultImage>
+            </goldenPoster>
+          </items>
+        </grid>
+      </items>
+    </scroller>
+  </body>{{CUT($movieview::Detailed=CUT|List=CUT|Grid=)}}
 </atv>

@@ -1,33 +1,40 @@
 <atv>
   <head>
     <script src="{{URL(:/js/utils.js)}}" />
-    <script src="{{URL(:/js/sectionHoldSelect.js)}}" />
+    <script src="{{URL(:/js/settings.js)}}" />
   </head>
 
   <body>
-    {{VAR(sections:NoKey:FALSE)}}  <!--this sets the var to FALSE-->
-    
-    <listWithPreview id="Library_List">
+      {{VAR(sections:NoKey:FALSE)}}  <!--this sets the var to FALSE-->
+
+      <itemCollectionWithImageHeader id="com.sample.menu-items-with-sections">
       <header>
-        <simpleHeader>
-          <title>{{TEXT(Plex Library)}}</title>
-        </simpleHeader>
+	    <imageHeader>
+	      <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=552|1080=828)}}, 0" required="true">
+	    {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{SETTING(plexhome_user)}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'titleSize'   : '20',\
+               'offsetX'     : '70',\
+               'offsetY'     : '35',\
+              'layers'      : ["PlexListUser"]\
+              })}})}})}}
+              </image>
+	    </imageHeader>
       </header>
+
       <menu>
         <sections>
-          
-          <!-- servers -->
+          <!-- local servers -->
           <menuSection>
           {{COPY(Server:@main/size::0=|1=COPY)}}
-            
             <header>
               <horizontalDivider alignment="left">
                 <title>{{VAL(name)}}{{VAL(local::0= &lt;{{TEXT(remote)}}&gt;|0 =)}}</title>
               </horizontalDivider>
-            </header>{{CUT(@main/size:CUT:0=CUT|1=CUT|1 =)}}
-            
+            </header>{{CUT(@main/size:CUT:0=CUT|1=)}}
             <items>
-              <!-- /library/sections -->
+                <!-- /library/sections -->
               <oneLineMenuItem id="{{VAL(key)}}"
                                        onPlay="atv.loadURL('{{URL(key:::PlexConnect={{EVAL('{{VAL(scanner)}}'.replace(' ', '_'))}})}}')"
                                        onSelect="atv.loadURL('{{URL(key:::PlexConnect={{EVAL('{{VAL(scanner)}}'.replace(' ', '_'))}})}}')"
@@ -40,7 +47,8 @@
                   <link>{{URL(key::/recentlyAdded:X-Plex-Container-Start=0&amp;X-Plex-Container-Size=20&amp;PlexConnect=Main_SectionPreview-{{VAL(type)}})}}</link>{{CUT(type:CUT:a=CUT|photo=|q=CUT)}}
                 </preview>
               </oneLineMenuItem>
-              
+
+
               <!-- search -->
               <oneLineMenuItem id="{{VAL(searchKey)}}"
                                        onPlay="atv.loadURL('{{URL(searchKey)}}')"
@@ -48,20 +56,21 @@
                 <label>{{TEXT(Search)}}</label>
                 <accessories><arrow/></accessories>
               </oneLineMenuItem>
-              
-            </items>
+
+
+              </items>
           </menuSection>
-        
+
         </sections>
       </menu>
-    </listWithPreview>{{CUT(#sections::FALSE=CUT|TRUE=)}}  <!--CUT if no section added-->
-    
+    </itemCollectionWithImageHeader>{{CUT(#sections::FALSE=CUT|TRUE=)}}
+
     <!--No Sections Available-->
     <dialog id="com.sample.error-dialog">
     {{CUT(#sections::FALSE=|TRUE=CUT)}}
       <title>PlexConnect</title>
       <description>{{TEXT(No Plex Library Sections Available)}}</description>
     </dialog>
-    
+
   </body>
 </atv>

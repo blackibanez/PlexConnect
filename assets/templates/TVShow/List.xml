@@ -4,12 +4,18 @@
   </head>
 
   <body>
-    <listWithPreview id="Show_List">
+    <itemCollectionWithImageHeader id="Show_List">
       <header>
-        <simpleHeader>
-          <title>{{VAL(title1)}}</title>
-          <subtitle>{{VAL(title2)}}</subtitle>
-        </simpleHeader>
+	    <imageHeader>
+	      <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=552|1080=828)}}, 0" required="true">
+	      {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{VAL(title1)}}"))}}",\
+              'subtitle'    : "{{EVAL(quote_plus("{{VAL(title2)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexSubList"]\
+              })}})}})}}
+	      </image>
+	    </imageHeader>
       </header>
       <menu>
         <sections>
@@ -17,10 +23,10 @@
             <items>
               <oneLineMenuItem id="{{VAL(key)}}" onPlay="atv.loadURL('{{URL(key:::PlexConnect=TVShow_Season)}}')"
                                                  onSelect="atv.loadURL('{{URL(key:::PlexConnect=TVShow_Season)}}')"
-                                                 onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_Menu)}}')">
+                                                 onHoldSelect="scrobbleMenu('{{URL(key:::PlexConnect=Scrobble_MenuShow)}}')">
                 {{COPY(Directory)}}
                 <label>{{VAL(title)}}</label>
-                <rightLabel>{{unwatchedCountList(leafCount:0:viewedLeafCount:0)}}</rightLabel>{{CUT($showunwatched::False=CUT|True=)}}
+								<rightLabel>{{unwatchedCountList(leafCount:0:viewedLeafCount:0)}}</rightLabel>{{CUT($showunwatched::False=CUT|True=)}}
                 <preview>
                   <crossFadePreview>
                     <image>{{IMAGEURL(thumb::768)}}</image>
@@ -35,6 +41,6 @@
           </menuSection>
         </sections>
       </menu>
-    </listWithPreview>
+    </itemCollectionWithImageHeader>
   </body>
 </atv>

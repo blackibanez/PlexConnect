@@ -4,12 +4,32 @@
   </head>
 
   <body>
-    <itemDetail id="com.apple.trailers">
-		<title>{{VAL(Video/title)}}</title>
-		<subtitle>{{VAL(Video/studio)}}</subtitle>
+    <itemDetailWithImageHeader id="com.apple.trailers">
+    <header>
+	    <imageHeader>
+            <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=440|1080=690)}}, 0" required="true">
+                {{URL(:/fanartcache/{{getBackground({{EVAL({\
+                'title'       : "{{EVAL(quote_plus("{{VAL(Video/title)}}"))}}",\
+                'subtitle'    : "{{EVAL(quote_plus("{{VAL(Video/studio)}}"))}}",\
+                'image'       : "{{IMAGEURL(Video/art:::)}}",\
+                'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+                'imageBlur'   : "{{VAL($fanartblur::1=1|2=2|3=3|0=)}}",\
+                'titleSize'   : '50',\
+                'subtitleSize' : '27',\
+                'anchorX'     : 'right',\
+                'anchorY'     : 'top',\
+                'offsetX'     : '50',\
+                'offsetY'     : '20',\
+                'lineheight'  : '175',\
+                'layers': ["PlexPrePlay{{VAL($fanarttint::On=Text|Off=)}}","PlexPrePlayLine"]\
+                })}})}})}}
+
+	      </image>
+	     </imageHeader>
+	    </header>
 		<rating>{{contentRating(Video/contentRating)}}</rating>
 		<summary>{{VAL(Video/summary)}}</summary>
-		<image style="squarePoster">{{IMAGEURL(Video/thumb::384)}}</image>
+		<image style="moviePoster">{{IMAGEURL(Video/thumb::768)}}</image>
 		<defaultImage>resource://Poster.png</defaultImage>
 
 		<centerShelf>
@@ -28,6 +48,6 @@
 			</sections>
 		</shelf>
 		</centerShelf>
-		</itemDetail>
+		</itemDetailWithImageHeader>
 	</body>
 </atv>

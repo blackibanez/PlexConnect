@@ -3,21 +3,30 @@
     <script src="{{URL(:/js/utils.js)}}" />
     <script src="{{URL(:/js/myPlexHome.js)}}" />
   </head>
-  
-  <body>
-    <listWithPreview id="List_PlexHome">
+
+   <body>
+    <itemCollectionWithImageHeader id="SettingsPage_PlexHome">
       <header>
-        <simpleHeader>
-          <title>{{TEXT(Settings)}}</title>
-        </simpleHeader>
+        <imageHeader>
+          <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=552|1080=828)}}, 0" required="true">
+            {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'        : "{{EVAL(quote_plus("{{TEXT(Settings)}}"))}}",\
+              'subtitle'     : "{{EVAL(quote_plus("{{TEXT(Plex Home)}}"))}}",\
+              'resolution'   : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'       : ["PlexSubList"]\
+            })}})}})}}
+          </image>
+        </imageHeader>
       </header>
+
       <preview>
         <keyedPreview>
           <title>&#x00AD;<!--soft-hyphen--></title>
-          <summary/>
+          <summary>"Revenant" Theme for PlexConnect.</summary>
           <metadataKeys>
             <label>{{TEXT(Version)}}</label>
             <label>{{TEXT(Authors)}}</label>
+            <label>{{TEXT(Designer)}}</label>
             <label>{{TEXT(Wiki/Docs)}}</label>
             <label>{{TEXT(Homepage)}}</label>
             <label>{{TEXT(Forum)}}</label>
@@ -25,11 +34,12 @@
           <metadataValues>
             <label>{{EVAL(__VERSION__)}}</label>
             <label>Baa, roidy</label>
+            <label>CyberGhost84</label>
             <label>f00b4r, meltman</label>
             <label>https://github.com/ibaa/plexconnect</label>
             <label>http://forums.plexapp.com/...plexconnect</label>
           </metadataValues>
-          <image>{{URL(:/thumbnails/PlexConnectLogo.jpg)}}</image>
+          <image>{{URL(:/thumbnails/Images/Logo/PlexConnectLogo.png)}}</image>
         </keyedPreview>
       </preview>
 
@@ -58,6 +68,6 @@
           </menuSection>
         </sections>
       </menu>
-    </listWithPreview>
+    </itemCollectionWithImageHeader>
   </body>
 </atv>

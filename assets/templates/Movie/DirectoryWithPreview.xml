@@ -4,14 +4,21 @@
   </head>
 
   <body>
-    <listWithPreview id="com.sample.menu-items-with-sections">
+    <itemCollectionWithImageHeader id="com.sample.menu-items-with-sections">
     {{CUT(size:CUT:0=CUT|1=)}}
       <header>
-        <simpleHeader>
-          <title>{{VAL(title1:Plex Library)}}</title>
-          <subtitle>{{VAL(title2)}}</subtitle>
-        </simpleHeader>
-      </header>
+	    <imageHeader>
+	      <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=552|1080=828)}}, 0" required="true">
+              {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{VAL(title1:Plex Library)}}"))}}",\
+              'subtitle'    : "{{EVAL(quote_plus("{{VAL(title2)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexSubList"]\
+              })}})}})}}
+	      </image>
+	     </imageHeader>
+	    </header>
+
       <menu>
         <sections>
           <menuSection>
@@ -30,7 +37,7 @@
           </menuSection>
         </sections>
       </menu>
-    </listWithPreview>
+    </itemCollectionWithImageHeader>
 
     <!--No Items Available-->
     <dialog id="com.sample.error-dialog">

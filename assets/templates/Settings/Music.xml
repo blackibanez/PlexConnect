@@ -6,19 +6,28 @@
   </head>
 
   <body>
-    <listWithPreview id="SettingsPage_Music">
+    <itemCollectionWithImageHeader id="SettingsPage_Music">
       <header>
-        <simpleHeader>
-          <title>{{TEXT(Music)}}</title>
-        </simpleHeader>
+        <imageHeader>
+          <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=552|1080=828)}}, 0" required="true">
+            {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{TEXT(Settings)}}"))}}",\
+              'subtitle'    : "{{EVAL(quote_plus("{{TEXT(Music Options)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexSubList"]\
+            })}})}})}}
+          </image>
+        </imageHeader>
       </header>
+
       <preview>
         <keyedPreview>
           <title>&#x00AD;<!--soft-hyphen--></title>
-          <summary/>
+          <summary>"Revenant" Theme for PlexConnect.</summary>
           <metadataKeys>
             <label>{{TEXT(Version)}}</label>
             <label>{{TEXT(Authors)}}</label>
+            <label>{{TEXT(Designer)}}</label>
             <label>{{TEXT(Wiki/Docs)}}</label>
             <label>{{TEXT(Homepage)}}</label>
             <label>{{TEXT(Forum)}}</label>
@@ -26,11 +35,12 @@
           <metadataValues>
             <label>{{EVAL(__VERSION__)}}</label>
             <label>Baa, roidy</label>
+            <label>CyberGhost84</label>
             <label>f00b4r, meltman</label>
             <label>https://github.com/ibaa/plexconnect</label>
             <label>http://forums.plexapp.com/...plexconnect</label>
           </metadataValues>
-          <image>{{URL(:/thumbnails/PlexConnectLogo.jpg)}}</image>
+          <image>{{URL(:/thumbnails/Images/Logo/PlexConnectLogo.png)}}</image>
         </keyedPreview>
       </preview>
 
@@ -41,6 +51,10 @@
               <oneLineMenuItem id="MusicView" onSelect="toggleSettings('MusicView', 'Settings_Music')">
                 <label>{{TEXT(Music View)}}</label>
                 <rightLabel>{{SETTING(musicview)}}</rightLabel>
+              </oneLineMenuItem>
+              <oneLineMenuItem id="ShowTitles_Music" onSelect="toggleSettings('ShowTitles_Music', 'Settings_Music')">
+                <label>{{TEXT(Poster Titles)}}</label>
+                <rightLabel>{{SETTING(showtitles_music)}}</rightLabel>
               </oneLineMenuItem>
             </items>
           </menuSection>-->
@@ -55,42 +69,32 @@
 
               <oneLineMenuItem id="Music_NavBar_RecentlyAdded" onSelect="toggleSettings('Music_NavBar_RecentlyAdded', 'Settings_Music')">
                 <label>{{TEXT(Recently Added)}}</label>
-                <accessories>
-                  <checkMark/>
-                </accessories>{{CUT($music_navbar_recentlyadded::unchecked=CUT|checked=)}}
+                <rightLabel>{{SETTING(music_navbar_recentlyadded)}}</rightLabel>
               </oneLineMenuItem>
 
               <oneLineMenuItem id="Music_NavBar_Genre" onSelect="toggleSettings('Music_NavBar_Genre', 'Settings_Music')">
                 <label>{{TEXT(Genre)}}</label>
-                <accessories>
-                  <checkMark/>
-                </accessories>{{CUT($music_navbar_genre::unchecked=CUT|checked=)}}
+                <rightLabel>{{SETTING(music_navbar_genre)}}</rightLabel>
               </oneLineMenuItem>
 
               <oneLineMenuItem id="Music_NavBar_Decade" onSelect="toggleSettings('Music_NavBar_Decade', 'Settings_Music')">
                 <label>{{TEXT(Decade)}}</label>
-                <accessories>
-                  <checkMark/>
-                </accessories>{{CUT($music_navbar_decade::unchecked=CUT|checked=)}}
+                <rightLabel>{{SETTING(music_navbar_decade)}}</rightLabel>
               </oneLineMenuItem>
 
               <oneLineMenuItem id="Music_NavBar_Year" onSelect="toggleSettings('Music_NavBar_Year', 'Settings_Music')">
                 <label>{{TEXT(Year)}}</label>
-                <accessories>
-                  <checkMark/>
-                </accessories>{{CUT($music_navbar_year::unchecked=CUT|checked=)}}
-              </oneLineMenuItem>   
+                <rightLabel>{{SETTING(music_navbar_year)}}</rightLabel>
+              </oneLineMenuItem>
 
               <oneLineMenuItem id="Music_NavBar_More" onSelect="toggleSettings('Music_NavBar_More', 'Settings_Music')">
                 <label>{{TEXT(More...)}}</label>
-                <accessories>
-                  <checkMark/>
-                </accessories>{{CUT($music_navbar_more::unchecked=CUT|checked=)}}
-              </oneLineMenuItem>              
+                <rightLabel>{{SETTING(music_navbar_more)}}</rightLabel>
+              </oneLineMenuItem>
             </items>
           </menuSection>
         </sections>
       </menu>
-    </listWithPreview>
+    </itemCollectionWithImageHeader>
   </body>
 </atv>

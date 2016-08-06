@@ -4,21 +4,29 @@
     <script src="{{URL(:/js/utils.js)}}" />
     <script src="{{URL(:/js/settings.js)}}" />
   </head>
-
   <body>
-    <listWithPreview id="SettingsPage">
-      <header>
-        <simpleHeader>
-          <title>{{TEXT(Settings)}}</title>
-        </simpleHeader>
+    <itemCollectionWithImageHeader id="SettingsPage">
+         <header>
+        <imageHeader>
+          <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=552|1080=828)}}, 0" required="true">
+              {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{TEXT(PlexConnect)}}"))}}",\
+              'subtitle'       : "{{EVAL(quote_plus("{{TEXT(Settings)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexSubList"]\
+              })}})}})}}
+          </image>
+        </imageHeader>
       </header>
+
       <preview>
         <keyedPreview>
           <title>&#x00AD;<!--soft-hyphen--></title>
-          <summary/>
+          <summary>"Revenant" Theme for PlexConnect.</summary>
           <metadataKeys>
             <label>{{TEXT(Version)}}</label>
             <label>{{TEXT(Authors)}}</label>
+            <label>{{TEXT(Designer)}}</label>
             <label>{{TEXT(Wiki/Docs)}}</label>
             <label>{{TEXT(Homepage)}}</label>
             <label>{{TEXT(Forum)}}</label>
@@ -26,17 +34,18 @@
           <metadataValues>
             <label>{{EVAL(__VERSION__)}}</label>
             <label>Baa, roidy</label>
+            <label>CyberGhost84</label>
             <label>f00b4r, meltman</label>
             <label>https://github.com/ibaa/plexconnect</label>
             <label>http://forums.plexapp.com/...plexconnect</label>
           </metadataValues>
-          <image>{{URL(:/thumbnails/PlexConnectLogo.jpg)}}</image>
+          <image>{{URL(:/thumbnails/Images/Logo/PlexConnectLogo.png)}}</image>
         </keyedPreview>
       </preview>
 
       <menu>
         <sections>
-          
+
           <menuSection>
             <header>
               <horizontalDivider alignment="left">
@@ -46,10 +55,10 @@
             <items>
               <oneLineMenuItem id="discover" onSelect="discover('discover', 'Settings_Main')">
                 <label>{{TEXT(Discover)}}</label>
-								<rightLabel>Plex Media Servers: {{PMSCOUNT()}}</rightLabel>
+                <rightLabel>Plex Media Servers: {{PMSCOUNT()}}</rightLabel>
               </oneLineMenuItem>
-              
-							<oneLineMenuItem id="MyPlexSignInOut" onSelect="myPlexSignInOut()">{{CUT($myplex_auth::=| =CUT)}}
+
+              <oneLineMenuItem id="MyPlexSignInOut" onSelect="myPlexSignInOut()">{{CUT($myplex_auth::=| =CUT)}}
                 <label>{{TEXT(MyPlex Sign In)}}</label>
                 <rightLabel></rightLabel>
                 <accessories>
@@ -64,112 +73,150 @@
               <oneLineMenuItem id="PlexHomeUser" dimmed="true">{{CUT($myplex_auth::=| =CUT)}}
                 <label>{{TEXT(Switch Home User)}}</label>
                 <rightLabel></rightLabel>
-                <accessories>
-                  <arrow/>
-                </accessories>
               </oneLineMenuItem>
               <oneLineMenuItem id="PlexHomeUser" onSelect="plexHomeUser('{{URL(:/PMS(plex.tv)/api/home/users::PlexConnect=Settings_PlexHome)}}')">{{CUT($myplex_auth:CUT:=CUT| =)}}
                 <label>{{TEXT(Switch Home User)}}</label>
                 <rightLabel>{{TEXT(Off)}}</rightLabel>{{CUT($plexhome_enable::False=|True=CUT)}}
                 <rightLabel></rightLabel>{{CUT($plexhome_enable:CUT:False=CUT|True=)}}{{CUT($plexhome_auth::=| =CUT)}}
                 <rightLabel>{{SETTING(plexhome_user)}}</rightLabel>{{CUT($plexhome_enable:CUT:False=CUT|True=)}}{{CUT($plexhome_auth:CUT:=CUT| =)}}
-                <accessories>
-                  <arrow/>
-                </accessories>
               </oneLineMenuItem>
+            </items>
+          </menuSection>
+
+              <menuSection>
+            <header>
+              <horizontalDivider alignment="left">
+                <title>{{TEXT(Media)}}</title>
+              </horizontalDivider>
+            </header>
+              <items>
+                <oneLineMenuItem id="TranscoderAction" onSelect="toggleSettings('TranscoderAction', 'Settings_Main')">
+                  <label>{{TEXT(Transcoder Action)}}</label>
+                  <rightLabel>{{SETTING(transcoderaction)}}</rightLabel>
+                </oneLineMenuItem>
+                <oneLineMenuItem id="TranscodeQuality" onSelect="toggleSettings('TranscodeQuality', 'Settings_Main')">
+                  <label>{{TEXT(Transcoder Quality)}}</label>
+                  <rightLabel>{{SETTING(transcodequality)}}</rightLabel>
+                </oneLineMenuItem>
+                <oneLineMenuItem id="RemoteBitrate" onSelect="toggleSettings('RemoteBitrate', 'Settings_Main')">
+                  <label>{{TEXT(Remote Bitrate)}}</label>
+                  <rightLabel>{{SETTING(remotebitrate)}}</rightLabel>
+                </oneLineMenuItem>
               <oneLineMenuItem id="AllowDeletion" onSelect="toggleSettings('AllowDeletion', 'Settings_Main')">
                 <label>{{TEXT(Allow deletion of media)}}</label>
                 <rightLabel>{{SETTING(allowdeletion)}}</rightLabel>
               </oneLineMenuItem>
             </items>
           </menuSection>
-          
+
           <menuSection>
+        <header>
+          <horizontalDivider alignment="left">
+            <title>{{TEXT(Audio)}}</title>
+          </horizontalDivider>
+        </header>
+          <items>
+          <oneLineMenuItem id="AudioBoost" onSelect="toggleSettings('AudioBoost', 'Settings_Main')">
+            <label>{{TEXT(Audio Boost %)}}</label>
+            <rightLabel>{{SETTING(audioboost)}}</rightLabel>
+          </oneLineMenuItem>
+        </items>
+      </menuSection>
+
+              <menuSection>
+            <header>
+              <horizontalDivider alignment="left">
+                <title>{{TEXT(Photo)}}</title>
+              </horizontalDivider>
+            </header>
+              <items>
+              <oneLineMenuItem id="PhotoTranscoderAction" onSelect="toggleSettings('PhotoTranscoderAction', 'Settings_Main')">
+                <label>{{TEXT(Photo Transcoder Action)}}</label>
+                <rightLabel>{{SETTING(phototranscoderaction)}}</rightLabel>
+              </oneLineMenuItem>
+            </items>
+          </menuSection>
+
+              <menuSection>
+            <header>
+              <horizontalDivider alignment="left">
+                <title>{{TEXT(Subtitles)}}</title>
+              </horizontalDivider>
+            </header>
+              <items>
+              <oneLineMenuItem id="SubtitleRenderer" onSelect="toggleSettings('SubtitleRenderer', 'Settings_Main')">
+                <label>{{TEXT(Subtitle Renderer)}}</label>
+                <rightLabel>{{SETTING(subtitlerenderer)}}</rightLabel>
+              </oneLineMenuItem>
+              <oneLineMenuItem id="SubtitleSize" onSelect="toggleSettings('SubtitleSize', 'Settings_Main')">
+                <label>{{TEXT(Subtitle Size %)}}</label>
+                <rightLabel>{{SETTING(subtitlesize)}}</rightLabel>
+              </oneLineMenuItem>
+            </items>
+          </menuSection>
+
+
+              <menuSection>
             <header>
               <horizontalDivider alignment="left">
                 <title>{{TEXT(Appearance)}}</title>
               </horizontalDivider>
             </header>
-            <items>
-              <oneLineMenuItem id="GeneralAppearance" onSelect="atv.loadURL('{{URL(:/::PlexConnect=Settings_TopLevel)}}')">
+              <items>
+
+              <oneLineMenuItem id="Precache" onSelect="atv.loadURL('{{URL(:/::PlexConnect=Settings_TopLevel)}}')">
                 <label>{{TEXT(General Appearance)}}</label>
                 <accessories>
                   <arrow/>
                 </accessories>
               </oneLineMenuItem>
+
+              <oneLineMenuItem id="LibraryView" onSelect="atv.loadURL('{{URL(:/::PlexConnect=Settings_Library)}}')">
+                <label>{{TEXT(Library Options)}}</label>
+                <accessories>
+                  <arrow/>
+                </accessories>
+              </oneLineMenuItem>
+
               <oneLineMenuItem id="MovieView" onSelect="atv.loadURL('{{URL(:/::PlexConnect=Settings_Movies)}}')">
                 <label>{{TEXT(Movie Options)}}</label>
                 <accessories>
                   <arrow/>
                 </accessories>
               </oneLineMenuItem>
-              <oneLineMenuItem id="ShowView" onSelect="atv.loadURL('{{URL(:/::PlexConnect=Settings_TVShows)}}')">
-                <label>{{TEXT(TV Show Options)}}</label>
-                <accessories>
-                  <arrow/>
-                </accessories>
-              </oneLineMenuItem>
-              <oneLineMenuItem id="HomevideoView" onSelect="atv.loadURL('{{URL(:/::PlexConnect=Settings_HomeVideos)}}')">
-                <label>{{TEXT(Home Video Options)}}</label>
-                <accessories>
-                  <arrow/>
-                </accessories>
-              </oneLineMenuItem>
+
               <oneLineMenuItem id="MusicView" onSelect="atv.loadURL('{{URL(:/::PlexConnect=Settings_Music)}}')">
                 <label>{{TEXT(Music Options)}}</label>
                 <accessories>
                   <arrow/>
                 </accessories>
               </oneLineMenuItem>
+
+              <oneLineMenuItem id="ShowView" onSelect="atv.loadURL('{{URL(:/::PlexConnect=Settings_TVShows)}}')">
+                <label>{{TEXT(TV Show Options)}}</label>
+                <accessories>
+                  <arrow/>
+                </accessories>
+              </oneLineMenuItem>
+
+              <oneLineMenuItem id="HomevideoView" onSelect="atv.loadURL('{{URL(:/::PlexConnect=Settings_HomeVideos)}}')">
+                <label>{{TEXT(Home Video Options)}}</label>
+                <accessories>
+                  <arrow/>
+                </accessories>
+              </oneLineMenuItem>
+
               <oneLineMenuItem id="VideoOSD" onSelect="atv.loadURL('{{URL(:/::PlexConnect=Settings_VideoOSD)}}')">
                 <label>{{TEXT(Video Player OSD)}}</label>
                 <accessories>
                   <arrow/>
                 </accessories>
               </oneLineMenuItem>
+
             </items>
           </menuSection>
-          
-          <menuSection>
-            <header>
-              <horizontalDivider alignment="left">
-                <title>{{TEXT(Transcoder)}}</title>
-              </horizontalDivider>
-            </header>
-            <items>
-              <oneLineMenuItem id="TranscoderAction" onSelect="toggleSettings('TranscoderAction', 'Settings_Main')">
-                <label>{{TEXT(Transcoder Action)}}</label>
-                <rightLabel>{{SETTING(transcoderaction)}}</rightLabel>
-              </oneLineMenuItem>
-              <oneLineMenuItem id="TranscodeQuality" onSelect="toggleSettings('TranscodeQuality', 'Settings_Main')">
-                <label>{{TEXT(Transcoder Quality)}}</label>
-                <rightLabel>{{SETTING(transcodequality)}}</rightLabel>
-              </oneLineMenuItem>
-              <oneLineMenuItem id="RemoteBitrate" onSelect="toggleSettings('RemoteBitrate', 'Settings_Main')">
-                <label>{{TEXT(Remote Bitrate)}}</label>
-                <rightLabel>{{SETTING(remotebitrate)}}</rightLabel>
-              </oneLineMenuItem>
-              <oneLineMenuItem id="PhotoTranscoderAction" onSelect="toggleSettings('PhotoTranscoderAction', 'Settings_Main')">
-                <label>{{TEXT(Photo Transcoder Action)}}</label>
-                <rightLabel>{{SETTING(phototranscoderaction)}}</rightLabel>
-              </oneLineMenuItem>
-              <oneLineMenuItem id="SubtitleRenderer" onSelect="toggleSettings('SubtitleRenderer', 'Settings_Main')">
-                <label>{{TEXT(Subtitle Renderer)}}</label>
-                <rightLabel>{{SETTING(subtitlerenderer)}}</rightLabel>
-              </oneLineMenuItem>              
-              <oneLineMenuItem id="SubtitleSize" onSelect="toggleSettings('SubtitleSize', 'Settings_Main')">
-                <label>{{TEXT(Subtitle Size %)}}</label>
-                <rightLabel>{{SETTING(subtitlesize)}}</rightLabel>
-              </oneLineMenuItem>
-              <oneLineMenuItem id="AudioBoost" onSelect="toggleSettings('AudioBoost', 'Settings_Main')">
-                <label>{{TEXT(Audio Boost %)}}</label>
-                <rightLabel>{{SETTING(audioboost)}}</rightLabel>
-              </oneLineMenuItem>
-            </items>
-          </menuSection>
-          
         </sections>
       </menu>
-    </listWithPreview>
+    </itemCollectionWithImageHeader>
   </body>
 </atv>

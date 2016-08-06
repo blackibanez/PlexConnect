@@ -4,11 +4,18 @@
   </head>
 
 	<body>
-    <listWithPreview id="com.sample.menu-items-with-sections">
+    <itemCollectionWithImageHeader id="com.sample.menu-items-with-sections">
       <header>
-        <simpleHeader>
-          <title>{{TEXT(More...)}}</title>
-        </simpleHeader>
+	    <imageHeader>
+	      <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=552|1080=828)}}, 0" required="true">
+           {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{TEXT(More...)}}",\
+              'subtitle'    : "{{EVAL(quote_plus("{{VAL(title1)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexSubList"]\
+              })}})}})}}
+	      </image>
+	    </imageHeader>
       </header>
       <menu>
         <sections>
@@ -34,32 +41,32 @@
                   <link>{{URL(key::/aperture:X-Plex-Container-Start=0&amp;X-Plex-Container-Size=25&amp;PlexConnect=Main_SectionPreview)}}</link>
                 </preview>
               </oneLineMenuItem>
-              
+
               <oneLineMenuItem id="Shutter Speed" onPlay="atv.loadURL('{{URL(key::/exposure:PlexConnect=Photo_DirectoryWithPreview)}}')" onSelect="atv.loadURL('{{URL(key::/exposure:PlexConnect=Photo_DirectoryWithPreview)}}')">
                 <label>{{TEXT(Shutter Speed)}}</label>
                 <preview>
                   <link>{{URL(key::/exposure:X-Plex-Container-Start=0&amp;X-Plex-Container-Size=25&amp;PlexConnect=Main_SectionPreview)}}</link>
                 </preview>
               </oneLineMenuItem>
-              
+
               <oneLineMenuItem id="ISO" onPlay="atv.loadURL('{{URL(key::/iso:PlexConnect=Photo_DirectoryWithPreview)}}')" onSelect="atv.loadURL('{{URL(key::/iso:PlexConnect=Photo_DirectoryWithPreview)}}')">
                 <label>{{TEXT(ISO)}}</label>
                 <preview>
                   <link>{{URL(key::/iso:X-Plex-Container-Start=0&amp;X-Plex-Container-Size=25&amp;PlexConnect=Main_SectionPreview)}}</link>
                 </preview>
               </oneLineMenuItem>
-              
+
               <oneLineMenuItem id="Lens" onPlay="atv.loadURL('{{URL(key::/lens:PlexConnect=Photo_DirectoryWithPreview)}}')" onSelect="atv.loadURL('{{URL(key::/lens:PlexConnect=Photo_DirectoryWithPreview)}}')">
                 <label>{{TEXT(Lens)}}</label>
                 <preview>
                   <link>{{URL(key::/lens:X-Plex-Container-Start=0&amp;X-Plex-Container-Size=25&amp;PlexConnect=Main_SectionPreview)}}</link>
                 </preview>
               </oneLineMenuItem>
-              
+
             </items>
           </menuSection>
         </sections>
       </menu>
-    </listWithPreview>
+    </itemCollectionWithImageHeader>
   </body>
 </atv>

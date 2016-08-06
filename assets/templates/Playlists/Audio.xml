@@ -2,22 +2,28 @@
   <head>
     <script src="{{URL(:/js/utils.js)}}" />
   </head>
-  
+
   <body>
     {{VAR(items:NoKey:FALSE)}}  <!--this sets the var to FALSE-->
-    
+
     <!-- List -->
-    <listWithPreview id="Playlist_Audio_List">
+    <itemCollectionWithImageHeader id="Playlist_Audio_List">
     {{CUT(size:CUT:0=CUT|1=)}}
       <header>
-        <simpleHeader>
-          <title>{{VAL(title:{{TEXT(Audio Playlist)}})}}</title>
-        </simpleHeader>
+        <imageHeader>
+	      <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=552|1080=828)}}, 0" required="true">
+	    {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{VAL(title:{{TEXT(Audio Playlist)}})}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexList"]\
+              })}})}})}}
+              </image>
+	    </imageHeader>
       </header>
-      
+
       <menu>
         <sections>
-          
+
           <menuSection>
             <items>
               <!-- shuffle -->
@@ -59,14 +65,14 @@
 
             </items>
           </menuSection>
-          
+
           <menuSection>
             <header>
               <horizontalDivider alignment="left">
                 <title />
               </horizontalDivider>
             </header>
-            
+
             <!-- tracks -->
             <items>
               <oneLineMenuItem id="{{VAL(key)}}"
@@ -87,17 +93,17 @@
               </oneLineMenuItem>
             </items>
           </menuSection>
-          
+
         </sections>
       </menu>
-    </listWithPreview>
-    
+    </itemCollectionWithImageHeader>
+
     <!--No Items Available-->
     <dialog id="com.sample.error-dialog">
     {{CUT(#items::FALSE=|TRUE=CUT)}}
       <title>PlexConnect</title>
-      <description>{{TEXT(Audio Playlist: No Items Available)}}</description>
+      <description>{{TEXT(Video Playlist: No Items Available)}}</description>
     </dialog>
-    
+
   </body>
 </atv>

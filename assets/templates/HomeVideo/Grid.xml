@@ -2,15 +2,21 @@
   <head>
     <script src="{{URL(:/js/utils.js)}}" />
   </head>
-  
+
   <body>
     <scroller id="com.sample.movie-grid">
     {{CUT(size:CUT:0=CUT|1=)}}
-      <header>
-        <simpleHeader>
-          <title>{{VAL(title1)}}</title>
-          <subtitle>{{VAL(title2)}}</subtitle>
-        </simpleHeader>
+     <header>
+        <imageHeader>
+          <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=550|1080=825)}}, 0" required="true">
+              {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{EVAL(quote_plus("{{VAL(title1)}}"))}}",\
+              'subtitle'    : "{{EVAL(quote_plus("{{VAL(title2)}}"))}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexSubGrid"]\
+              })}})}})}}
+          </image>
+        </imageHeader>
       </header>
       <items>
         <grid columnCount="5" id="grid_0">
@@ -29,13 +35,13 @@
         </grid>
       </items>
     </scroller>
-    
+
     <!--No Items Available-->
     <dialog id="com.sample.error-dialog">
     {{CUT(size::0=|1=CUT)}}
       <title>PlexConnect</title>
       <description>{{TEXT(Plex Media Server: No Items Available)}}</description>
     </dialog>
-    
+
   </body>
 </atv>

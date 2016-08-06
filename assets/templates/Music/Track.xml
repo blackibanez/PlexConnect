@@ -4,13 +4,20 @@
   </head>
 
   <body>
-    <listWithPreview id="com.sample.menu-items-with-sections">
+    <itemCollectionWithImageHeader id="com.sample.menu-items-with-sections">
     {{CUT(size:CUT:0=CUT|1=)}}
       <header>
-        <simpleHeader>
-          <title>{{VAL(title1:Plex Mix)}}</title>
-          <subtitle>{{VAL(title2)}}</subtitle>
-        </simpleHeader>
+        <imageHeader>
+	      <image insets="0, 0, {{VAL(^aTVScreenResolution:1:720=552|1080=828)}}, 0" required="true">
+              {{URL(:/fanartcache/{{getBackground({{EVAL({\
+              'title'       : "{{VAL(title1:Plex Mix)}}",\
+              'subtitle'    : "{{VAL(title2)}}",\
+              'image'       : "{{IMAGEURL(art:::)}}",\
+              'resolution'  : "{{VAL(^aTVScreenResolution)}}",\
+              'layers'      : ["PlexSubList{{VAL($fanarttint::On=Text|Off=)}}"]\
+              })}})}})}}
+	      </image>
+	    </imageHeader>
       </header>
       <menu>
         <sections>
@@ -103,7 +110,7 @@
                   </crossFadePreview>
                 </preview>
               </oneLineMenuItem>
-              
+
             </items>
           </menuSection>
           <menuSection>
@@ -170,7 +177,7 @@
                   </crossFadePreview>
                 </preview>
               </oneLineMenuItem>
-              
+
             </items>
           </menuSection>
           <menuSection>
@@ -207,7 +214,7 @@
 
         </sections>
       </menu>
-    </listWithPreview>
+    </itemCollectionWithImageHeader>
 
     <!--No Items Available-->
     <dialog id="com.sample.error-dialog">

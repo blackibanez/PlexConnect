@@ -22,7 +22,6 @@ import ssl
 from multiprocessing import Pipe  # inter process communication
 import urllib, StringIO, gzip
 import signal
-import traceback
 
 import Settings, ATVSettings
 from Debug import *  # dprint()
@@ -152,6 +151,8 @@ class MyHandler(BaseHTTPRequestHandler):
             dprint(__name__, 2, "PlexConnect options:\n{0}", options)
             dprint(__name__, 2, "additional arguments:\n{0}", query)
             
+            
+                    
             if 'User-Agent' in self.headers and \
                'AppleTV' in self.headers['User-Agent']:
                 
@@ -198,6 +199,21 @@ class MyHandler(BaseHTTPRequestHandler):
                     JS = JSConverter(basename, options)
                     self.sendResponse(JS, 'text/javascript', True)
                     return
+                    
+                # proxy phobos.apple.com to support  PlexConnect main icon
+                if "a1.phobos.apple.com" in self.headers['Host']:
+                    resource = self.headers['Host']+self.path
+                    icon = g_param['CSettings'].getSetting('icon')
+                    if basename.startswith(icon):
+                        icon_res = basename[len(icon):]  # cut string from settings, keeps @720.png/@1080.png
+                        resource = './assets/icons/icon'+icon_res
+                        dprint(__name__, 1, "serving "+self.headers['Host']+self.path+" with "+resource)
+                        r = open(resource, "rb")
+                    else:
+                        r = urllib.urlopen('http://'+resource)
+                    self.sendResponse(r.read(), 'image/png', False)
+                    r.close()
+                    return    
                 
                 # serve "*.jpg" - thumbnails for old-style mainpage
                 if self.path.endswith(".jpg"):
@@ -238,11 +254,7 @@ class MyHandler(BaseHTTPRequestHandler):
             else:
                 self.send_error(403,"Not Serving Client %s" % self.client_address[0])
         except IOError:
-            dprint(__name__, 0, 'File Not Found:\n{0}', traceback.format_exc())
             self.send_error(404,"File Not Found: %s" % self.path)
-        except:
-            dprint(__name__, 0, 'Internal Server Error:\n{0}', traceback.format_exc())
-            self.send_error(500,"Internal Server Error: %s" % self.path)
 
 
 
@@ -368,7 +380,7 @@ if __name__=="__main__":
     
     param['IP_self'] = '192.168.178.20'  # IP_self?
     param['baseURL'] = 'http://'+ param['IP_self'] +':'+ cfg.getSetting('port_webserver')
-    param['HostToIntercept'] = 'trailers.apple.com'
+    param['HostToIntercept'] = 'www.icloud.com'
     
     if len(sys.argv)==1:
         Run(cmdPipe[1], param)
