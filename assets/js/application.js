@@ -56,10 +56,10 @@ atv.player.playerTimeDidChange = function(time)
 {
   remainingTime = Math.round((duration / 1000) - time);
   var thisReportTime = Math.round(time*1000)
-  
+
   // correct thisReportTime with startTime if stacked media part
   thisReportTime += startTime;
-  
+
 // report watched time
   if (lastReportedTime == -1 || Math.abs(thisReportTime-lastReportedTime) > 5000)
   {
@@ -67,25 +67,30 @@ atv.player.playerTimeDidChange = function(time)
     var token = '';
     if (accessToken!='')
         token = '&X-Plex-Token=' + accessToken;
-    loadPage( baseURL + '/:/timeline?ratingKey=' + ratingKey + 
+    loadPage( baseURL + '/:/timeline?ratingKey=' + ratingKey +
                         '&key=' + key +
                         '&duration=' + duration.toString() +
                         '&state=playing' +
-                        '&time=' + thisReportTime.toString() + 
-                        '&X-Plex-Client-Identifier=' + atv.device.udid + 
+                        '&time=' + thisReportTime.toString() +
+                        '&X-Plex-Client-Identifier=' + atv.device.udid +
                         '&X-Plex-Device-Name=' + encodeURIComponent(atv.device.displayName) +
                         token );
   }
-    
-    // ping transcoder to keep it alive
-    if (isTranscoding &&
-           (lastTranscoderPingTime == -1 || Math.abs(thisReportTime-lastTranscoderPingTime) > 60000)
-           )
-        {
-            lastTranscoderPingTime = thisReportTime;
-            loadPage( baseURL + '/video/:/transcode/universal/ping?session=' + atv.device.udid);
-        }
-  
+
+
+  // ping transcoder to keep it alive
+  if (isTranscoding &&
+       (lastTranscoderPingTime == -1 || Math.abs(thisReportTime-lastTranscoderPingTime) > 60000)
+     )
+  {
+    lastTranscoderPingTime = thisReportTime;
+    var token = '';
+    if (accessToken != '')
+        token = '&X-Plex-Token=' + accessToken;
+    loadPage( baseURL + '/video/:/transcode/universal/ping?session=' + atv.device.udid + token);
+  }
+
+
   if (subtitle)
       updateSubtitle(thisReportTime);
 };
@@ -94,25 +99,25 @@ atv.player.playerTimeDidChange = function(time)
  * Handle ATV playback stopped
  */
 atv.player.didStopPlaying = function()
-{	
+{
   // Remove views
   if (clockTimer) atv.clearInterval(clockTimer);
   if (endTimer) atv.clearInterval(endTimer);
-  Views = [];  
-  
+  Views = [];
+
   // Notify of a stop.
   var token = '';
   if (accessToken!='')
       token = '&X-Plex-Token=' + accessToken;
-  loadPage( baseURL + '/:/timeline?ratingKey=' + ratingKey + 
+  loadPage( baseURL + '/:/timeline?ratingKey=' + ratingKey +
                       '&key=' + key +
                       '&duration=' + duration.toString() +
                       '&state=stopped' +
-                      '&time=' + lastReportedTime.toString() + 
-                      '&X-Plex-Client-Identifier=' + atv.device.udid + 
+                      '&time=' + lastReportedTime.toString() +
+                      '&X-Plex-Client-Identifier=' + atv.device.udid +
                       '&X-Plex-Device-Name=' + encodeURIComponent(atv.device.displayName) +
                       token );
-    
+
     // Kill the transcoder session.
     if (isTranscoding)
         {
@@ -126,14 +131,14 @@ atv.player.didStopPlaying = function()
 
 atv.player.willStartPlaying = function()
 {
-    
+
     // init timer vars
     lastReportedTime = -1;
     lastTranscoderPingTime = -1;
     remainingTime = 0;  // reset remaining time
     startTime = 0;  // starting time for stacked media subsequent parts
     //todo: work <bookmarkTime> and fix "resume" for stacked media
-    
+
     // get baseURL, OSD settings, ...
     var videoPlayerSettings = atv.player.asset.getElementByTagName('videoPlayerSettings');
     if (videoPlayerSettings != null)
@@ -148,15 +153,15 @@ atv.player.willStartPlaying = function()
             showEndtime = videoPlayerSettings.getTextContent('showEndtime');
             showInfos = videoPlayerSettings.getTextContent('showInfos');
 
-            
+
             subtitleSize = videoPlayerSettings.getTextContent('subtitleSize');
-            
+
             log('willStartPlaying/getVideoPlayerSettings done');
 
       }
     // mediaURL and myMetadata
     getMetadata();
-  
+
   // load subtitle - aTV subtitle JSON
   subtitle = [];
   subtitlePos = 0;
@@ -168,7 +173,7 @@ atv.player.willStartPlaying = function()
      )
   {
     log("subtitleURL: "+subtitleURL);
-    
+
     // read subtitle stream
     var req = new XMLHttpRequest();
     req.onreadystatechange = function()
@@ -182,49 +187,49 @@ atv.player.willStartPlaying = function()
     req.send();
     log('willStartPlaying/parseSubtitleJSON done');
   }
-  
+
   var Views = [];
-    
+
     // Dummy animation to make sure clocks start as hidden
     var animation = {"type": "BasicAnimation", "keyPath": "opacity",
                     "fromValue": 0, "toValue": 0, "duration": 0,
                     "removedOnCompletion": false, "fillMode": "forwards",
                     "animationDidStop": function(finished) {} };
-  
+
   // Create clock view
-  containerView.frame = screenFrame; 
-  
+  containerView.frame = screenFrame;
+
   if (showInfos == "True")
   {
       overlay = initOverlay();
       Views.push(overlay);
       overlay.addAnimation(animation, endTimeView);
-      
+
       overlay2 = initOverlay2();
       Views.push(overlay2);
       overlay2.addAnimation(animation, endTimeView);
-      
+
       infoView = initVideoInfoView();
       Views.push(infoView);
       infoView.addAnimation(animation, endTimeView);
-      
+
       infoView2 = initVideoInfoView2();
       Views.push(infoView2);
       infoView2.addAnimation(animation, endTimeView);
-      
+
       posterView = initPosterView();
       Views.push(posterView);
       posterView.addAnimation(animation, endTimeView);
   }
-  
-    
+
+
   if (showClock == "True")
   {
       clockView = initClockView();
       Views.push(clockView);
       clockView.addAnimation(animation, clockView);
   }
- 
+
   if (duration > 0 ) // TODO: grab video length from player not library????
   {
     if (showEndtime == "True")
@@ -235,7 +240,7 @@ atv.player.willStartPlaying = function()
     }
   }
   log('willStartPlaying/createClockView done');
-  
+
   // create subtitle view
   if (subtitleURL &&
       ( !isTranscoding ||
@@ -250,11 +255,11 @@ atv.player.willStartPlaying = function()
       }
       log('willStartPlaying/createSubtitleView done');
   }
-  
+
   // Paint the views on Screen.
   containerView.subviews = Views;
   atv.player.overlay = containerView;
-    
+
   log('willStartPlaying done');
 };
 
@@ -270,7 +275,7 @@ atv.player.loadMoreAssets = function(callback)
         function()
         {
              atv.clearInterval(assettimer);
-                                 
+
              var root = atv.player.asset;
              var videoAssets = root.getElementsByTagName('httpFileVideoAsset');
              if (videoAssets != null && videoAssets.length > 1)
@@ -278,7 +283,7 @@ atv.player.loadMoreAssets = function(callback)
              else
                 videoAssets = null;
              callback.success(videoAssets);
-        
+
              log('loadMoreAssets done');
           } , 1000);
 }
@@ -288,13 +293,13 @@ atv.player.currentAssetChanged = function()
     // start time for stacked media
     var lastRatingKey = ratingKey;
     startTime += partDuration;
-    
+
     getMetadata();
-    
+
     // reset start time on media change (non-stacked)
     if (lastRatingKey != ratingKey)
         startTime = 0;
-    
+
     log('currentAssetChanged done');
 }
 
@@ -304,7 +309,7 @@ function getMetadata()
     // update mediaURL and myMetadata
     mediaURL = atv.player.asset.getTextContent('mediaURL');
     isTranscoding = (mediaURL.indexOf('transcode/universal') > -1);
-    
+
     var metadata = atv.player.asset.getElementByTagName('myMetadata');
     if (metadata != null)
         {
@@ -312,14 +317,14 @@ function getMetadata()
             ratingKey = metadata.getTextContent('ratingKey');
             duration = parseInt(metadata.getTextContent('duration'));
             partDuration = parseInt(metadata.getTextContent('partDuration'));
-            
+
             // todo: subtitle handling with playlists/stacked media
             subtitleURL = metadata.getTextContent('subtitleURL');
-            
+
             videoName = metadata.getTextContent('videoTitle');
             videoName2 = metadata.getTextContent('videoSubtitle');
             poster = metadata.getTextContent('poster');
-            
+
             log('updateMetadata/getMetadata done');
             }
     log('updateMetadata done');
@@ -339,7 +344,7 @@ if( atv.Element ) {
 		}
 		return undefined;
 	}
-    
+
     // getTextContent - return empty string if node not existing.
     atv.Element.prototype.getTextContent = function(tagName) {
         var element = this.getElementByTagName(tagName);
@@ -408,7 +413,7 @@ hideOverlays = function(animationDuration)
 /*
  * Handle ATV player state changes
  */
- 
+
 var pingTimer = null;
 
 atv.player.playerStateChanged = function(newState, timeIntervalSec) {
@@ -421,8 +426,11 @@ atv.player.playerStateChanged = function(newState, timeIntervalSec) {
     state = 'paused';
     if (isTranscoding)
     {
+      var token = '';
+      if (accessToken != '')
+          token = '&X-Plex-Token=' + accessToken;
       pingTimer = atv.setInterval(
-        function() { loadPage( baseURL + '/video/:/transcode/universal/ping?session=' + atv.device.udid); },
+        function() { loadPage( baseURL + '/video/:/transcode/universal/ping?session=' + atv.device.udid + token ); },
         60000
       );
     }
@@ -447,20 +455,20 @@ atv.player.playerStateChanged = function(newState, timeIntervalSec) {
   if (state != null)
   {
   var thisReportTime = Math.round(timeIntervalSec*1000);
-  
+
   // correct thisReportTime with startTime if stacked media part
   thisReportTime += startTime;
-  
+
   var token = '';
   if (accessToken!='')
       token = '&X-Plex-Token=' + accessToken;
-  loadPage( baseURL + '/:/timeline?ratingKey=' + ratingKey + 
+  loadPage( baseURL + '/:/timeline?ratingKey=' + ratingKey +
                       '&key=' + key +
                       '&duration=' + duration.toString() +
-                      '&state=' + state + 
-                      '&time=' + thisReportTime.toString() + 
+                      '&state=' + state +
+                      '&time=' + thisReportTime.toString() +
                       '&report=1' +
-                      '&X-Plex-Client-Identifier=' + atv.device.udid + 
+                      '&X-Plex-Client-Identifier=' + atv.device.udid +
                       '&X-Plex-Device-Name=' + encodeURIComponent(atv.device.displayName) +
                       token );
   }
@@ -490,13 +498,13 @@ function initOverlay()
 {
     var overlayHeight = screenFrame.height * 0.14;
     var overscanadjust = 0.008 * (parseInt(overscanAdjust));
-    
+
     overlay = new atv.View();
-    overlay.frame = {x: screenFrame.x, 
+    overlay.frame = {x: screenFrame.x,
                      y: screenFrame.y + (screenFrame.height * (1 + overscanadjust)) - overlayHeight,
                      width: screenFrame.width, height: overlayHeight };
     overlay.backgroundColor = { red: 0, green: 0, blue: 0, alpha: 0.7 };
-    
+
     return overlay;
 }
 
@@ -525,11 +533,11 @@ function initOverlay2()
     var overscanadjust = 0.006 * (parseInt(overscanAdjust));
 
     overlay2 = new atv.View();
-    overlay2.frame = {x: screenFrame.x, 
-                      y: screenFrame.y + (screenFrame.height * (0.16 - overscanadjust)) - overlayHeight, 
+    overlay2.frame = {x: screenFrame.x,
+                      y: screenFrame.y + (screenFrame.height * (0.16 - overscanadjust)) - overlayHeight,
                       width: screenFrame.width, height: overlayHeight };
     overlay2.backgroundColor = { red: 0, green: 0, blue: 0, alpha: 0.7 };
-    
+
     return overlay2;
 }
 
@@ -541,17 +549,17 @@ function initVideoInfoView()
   var overscanadjust = 0.4 * (parseInt(overscanAdjust));
   var offsetx = screenFrame.width * 0.125;
   if (clockPosition == 'Left') offsetx = -50;
-    
-  infoView.frame = { "x": screenFrame.x + (screenFrame.width * overscanadjust) + offsetx, 
+
+  infoView.frame = { "x": screenFrame.x + (screenFrame.width * overscanadjust) + offsetx,
                       "y": screenFrame.y + (screenFrame.height * (0.96 + overscanadjust)) - height,
                       "width": width, "height": height };
-    
+
   if (clockPosition == 'Left') {
       infoView.attributedString = {string: " " + videoName2, attributes: {pointSize: 36.0, color: {red: 1, blue: 1, green: 1}, alignment: "right", weight: "light"}};
   } else {
       infoView.attributedString = {string: " " + videoName2, attributes: {pointSize: 36.0, color: {red: 1, blue: 1, green: 1}, alignment: "left", weight: "light"}};
   }
-    
+
   return infoView;
 }
 
@@ -563,17 +571,17 @@ function initVideoInfoView2()
   var overscanadjust = 0.4 * (parseInt(overscanAdjust));
   var offsetx = screenFrame.width * 0.13;
   if (clockPosition == 'Left') offsetx = -50;
-    
-  infoView2.frame = { "x": screenFrame.x + (screenFrame.width * overscanadjust) + offsetx - 2, 
+
+  infoView2.frame = { "x": screenFrame.x + (screenFrame.width * overscanadjust) + offsetx - 2,
                       "y": screenFrame.y + (screenFrame.height * (0.90 + overscanadjust)) - height,
                       "width": width, "height": height };
-    
+
   if (clockPosition == 'Left') {
       infoView2.attributedString = {string: " " + videoName, attributes: {pointSize: 20.0, color: {red: 1, blue: 1, green: 1}, alignment: "right", weight: "light"}};
   } else {
       infoView2.attributedString = {string: " " + videoName, attributes: {pointSize: 20.0, color: {red: 1, blue: 1, green: 1}, alignment: "left", weight: "light"}};
   }
-    
+
   return infoView2;
 }
 
@@ -591,17 +599,17 @@ function initClockView()
   if (clockPosition == 'Center') var xmul = 0.5;
   else if (clockPosition == 'Right') var xmul = 0.9;
 
-  
+
   // Setup the clock frame
   if (showInfos == "False") clockView.backgroundColor = { red: 0, blue: 0, green: 0, alpha: 0.7};
-  clockView.frame = { "x": screenFrame.x + (screenFrame.width * xmul) - (width * 0.5), 
+  clockView.frame = { "x": screenFrame.x + (screenFrame.width * xmul) - (width * 0.5),
                       "y": screenFrame.y + (screenFrame.height * (0.96 + overscanadjust)) - height,
                       "width": width, "height": height };
 
   // Update the overlay clock
   clockTimer = atv.setInterval( updateClock, 1000 );
   updateClock();
-  
+
   return clockView;
 }
 
@@ -618,17 +626,17 @@ function initEndTimeView()
   var xmul = 0.5; // Default for Left Position
   //if (clockPosition == 'Center') var xmul = 0.5;
   //else if (clockPosition == 'Right') var xmul = 0.9;
-    
+
   // Setup the end time frame
   if (showInfos == "False") endTimeView.backgroundColor = { red: 0, blue: 0, green: 0, alpha: 0.7};
-  endTimeView.frame = { "x": screenFrame.x + (screenFrame.width * xmul) - (width * 0.5), 
+  endTimeView.frame = { "x": screenFrame.x + (screenFrame.width * xmul) - (width * 0.5),
                         "y": screenFrame.y + (screenFrame.height * (0.075 - overscanadjust)) - height,
                         "width": width, "height": height };
 
   // Update the overlay clock
   endTimer = atv.setInterval( updateEndTime, 1000 );
   updateEndTime();
-  
+
   return endTimeView;
 }
 
@@ -683,7 +691,7 @@ function updateEndTime()
   else { endTimeStr = endTimeStr + timestr12; }
   //if (remainingTime == 0) { endTimeStr = ''; endTimeView.backgroundColor = { red: 0, blue: 0, green: 0, alpha: 0};}
   //else { endTimeView.backgroundColor = { red: 0, blue: 0, green: 0, alpha: 0.7};}
-  
+
   endTimeView.attributedString = {string: endTimeStr,
       attributes: {pointSize: 20.0, color: {red: 1, blue: 1, green: 1}, alignment: "center"}};
 };
@@ -705,10 +713,10 @@ function initSubtitleView()
 {
   var width = screenFrame.width;
   var height = screenFrame.height * 1/14 * subtitleSize/100;  // line height: 1/14 seems to fit to 40pt font
-  
+
   var xOffset = screenFrame.width * 1/640;  // offset for black letter shadow/border/background
   var yOffset = screenFrame.height * 1/360;
-  
+
   // Setup the subtitle frames
   for (var i=0;i<subtitleMaxLines;i++)
   {
@@ -727,7 +735,7 @@ function initSubtitleView()
                                           "width": width, "height": height
                                         };
   }
-  
+
   return subtitleView;
 }
 
@@ -745,14 +753,14 @@ function updateSubtitle(time)
         subtitlePos++;
     }
     // current subtitle to show: subtitle.Timestamp[subtitlePos]
-    
+
     // get number of lines (max subtitleMaxLines)
     var lines
     if (subtitle.Timestamp[subtitlePos].Line)
         lines = Math.min(subtitle.Timestamp[subtitlePos].Line.length, subtitleMaxLines);
     else
         lines = 0;
-    
+
     // update subtitleView[]
     var i_view=0;
     for (var i=0;i<subtitleMaxLines-lines;i++)  // fill empty lines on top
@@ -793,7 +801,7 @@ function updateSubtitle(time)
         };
         i_view++;
     }
-    
+
     if (time<10000)
         log("updateSubtitle done, subtitlePos="+subtitlePos);
 }
@@ -805,7 +813,7 @@ function updateSubtitle(time)
  *
  */
 
-atv.config = { 
+atv.config = {
     "doesJavaScriptLoadRoot": true,
     "DEBUG_LEVEL": 4
 };
@@ -821,7 +829,7 @@ atv.onAppEntry = function()
         var req = new XMLHttpRequest();
         req.open('GET', url, false);
         req.send();
-        
+
         // load main page
         atv.loadURL("{{URL(/PlexConnect.xml)}}");
     }
@@ -837,7 +845,7 @@ atv.onAppEntry = function()
     </dialog> \
   </body> \
 </atv>";
-        
+
         var doc = atv.parseXML(xmlstr);
         atv.loadXML(doc);
     }
@@ -847,7 +855,7 @@ atv.onAppEntry = function()
 atv.onGenerateRequest = function(request)
 {
     //log("atv.onGenerateRequest: "+request.url);
-    
+
     if (request.url.indexOf("{{URL(/)}}")!=-1)
     {
         var sep = "&";
@@ -859,6 +867,6 @@ atv.onGenerateRequest = function(request)
         request.url = request.url +sep+ "PlexConnectUDID=" + atv.device.udid;
         request.url = request.url +"&"+ "PlexConnectATVName=" + encodeURIComponent(atv.device.displayName);
     }
-    
+
     log("atv.onGenerateRequest done: "+request.url);
 }
