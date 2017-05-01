@@ -8,4 +8,5 @@ Version.py
 
 # Version string - globally available
 
-__VERSION__ = '0.5-RevenantDev-170616'
+
+__VERSION__ = '0.6-RevenantDev-05012017'

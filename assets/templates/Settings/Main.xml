@@ -215,6 +215,49 @@
 
             </items>
           </menuSection>
+
+          <menuSection>
+            <header>
+              <horizontalDivider alignment="left">
+                <title>{{TEXT(Transcoder)}}</title>
+              </horizontalDivider>
+            </header>
+            <items>
+              <oneLineMenuItem id="TranscoderAction" onSelect="toggleSettings('TranscoderAction', 'Settings_Main')">
+                <label>{{TEXT(Transcoder Action)}}</label>
+                <rightLabel>{{SETTING(transcoderaction)}}</rightLabel>
+              </oneLineMenuItem>
+              <oneLineMenuItem id="TranscodeQuality" onSelect="toggleSettings('TranscodeQuality', 'Settings_Main')">
+                <label>{{TEXT(Transcoder Quality)}}</label>
+                <rightLabel>{{SETTING(transcodequality)}}</rightLabel>
+              </oneLineMenuItem>
+              <oneLineMenuItem id="RemoteBitrate" onSelect="toggleSettings('RemoteBitrate', 'Settings_Main')">
+                <label>{{TEXT(Remote Bitrate)}}</label>
+                <rightLabel>{{SETTING(remotebitrate)}}</rightLabel>
+              </oneLineMenuItem>
+              <oneLineMenuItem id="DolbyDigital" onSelect="toggleSettings('DolbyDigital', 'Settings_Main')">
+                <label>{{TEXT(Dolby Digital)}}</label>
+                <rightLabel>{{SETTING(dolbydigital)}}</rightLabel>
+              </oneLineMenuItem>
+              <oneLineMenuItem id="PhotoTranscoderAction" onSelect="toggleSettings('PhotoTranscoderAction', 'Settings_Main')">
+                <label>{{TEXT(Photo Transcoder Action)}}</label>
+                <rightLabel>{{SETTING(phototranscoderaction)}}</rightLabel>
+              </oneLineMenuItem>
+              <oneLineMenuItem id="SubtitleRenderer" onSelect="toggleSettings('SubtitleRenderer', 'Settings_Main')">
+                <label>{{TEXT(Subtitle Renderer)}}</label>
+                <rightLabel>{{SETTING(subtitlerenderer)}}</rightLabel>
+              </oneLineMenuItem>
+              <oneLineMenuItem id="SubtitleSize" onSelect="toggleSettings('SubtitleSize', 'Settings_Main')">
+                <label>{{TEXT(Subtitle Size %)}}</label>
+                <rightLabel>{{SETTING(subtitlesize)}}</rightLabel>
+              </oneLineMenuItem>
+              <oneLineMenuItem id="AudioBoost" onSelect="toggleSettings('AudioBoost', 'Settings_Main')">
+                <label>{{TEXT(Audio Boost %)}}</label>
+                <rightLabel>{{SETTING(audioboost)}}</rightLabel>
+              </oneLineMenuItem>
+            </items>
+          </menuSection>
+          
         </sections>
       </menu>
     </itemCollectionWithImageHeader>

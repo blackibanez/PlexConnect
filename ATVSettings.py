@@ -10,6 +10,7 @@ from Debug import *  # dprint()
 
 
 options = { \
+
     'playlistsview'                     :('List', 'Grid', 'Hide'), \
     'libraryview'                       :('Discover', 'Grid', 'List', 'Hide'), \
     'sharedlibrariesview'               :('List', 'Grid', 'Hide'), \
@@ -95,7 +96,9 @@ options = { \
     'listtint'                          :('Off', 'On'), \
     'paradelisttint'                    :('Off', 'On'), \
     'menuhint'                          :('Off', 'On'), \
+    'dolbydigital'                      :('Off', 'On'), \
     'menubackground'                    :('Default Black', 'PHT Grey', 'Plex Orange', 'Apple Blue', 'Android Green'), \
+
     }
 
 
