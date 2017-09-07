@@ -34,19 +34,19 @@ g_settings = [
     \
     ('enable_plexconnect_autodetect', ('True', '((True)|(False))')),
     ('ip_plexconnect'  , ('0.0.0.0', '([0-9]{1,3}\.){3}[0-9]{1,3}')),
-    ('hosttointercept' , ('www.icloud.com', '[a-zA-Z0-9_.-]+')),
+    ('hosttointercept' , ('trailers.apple.com ', '[a-zA-Z0-9_.-]+')),
     \
     ('port_webserver'  , ('80', '[0-9]{1,5}')),
     ('enable_webserver_ssl'         , ('True', '((True)|(False))')),
     ('port_ssl'        , ('443', '[0-9]{1,5}')),
-    ('certfile'        , ('./assets/certificates/trailers.pem', '.+.pem')),
+    ('certfile'        , ('/usr/local/plexconnect/etc/certificates/trailers.pem', '.+.pem')),
     \
     ('allow_gzip_atv'              , ('False', '((True)|(False))')),
     ('allow_gzip_pmslocal'         , ('False', '((True)|(False))')),
     ('allow_gzip_pmsremote'        , ('True', '((True)|(False))')),
     \
     ('loglevel'        , ('Normal', '((Off)|(Normal)|(High))')),
-    ('logpath'         , ('.', '.+')),
+    ('logpath'         , ('/usr/local/plexconnect/var/', '.+')),
     ]
 
 
