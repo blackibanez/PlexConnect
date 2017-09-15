@@ -36,9 +36,9 @@ g_settings = [
     ('ip_plexconnect'  , ('0.0.0.0', '([0-9]{1,3}\.){3}[0-9]{1,3}')),
     ('hosttointercept' , ('trailers.apple.com ', '[a-zA-Z0-9_.-]+')),
     \
-    ('port_webserver'  , ('80', '[0-9]{1,5}')),
+    ('port_webserver'  , ('81', '[0-9]{1,5}')),
     ('enable_webserver_ssl'         , ('True', '((True)|(False))')),
-    ('port_ssl'        , ('443', '[0-9]{1,5}')),
+    ('port_ssl'        , ('444', '[0-9]{1,5}')),
     ('certfile'        , ('/usr/local/plexconnect/etc/certificates/trailers.pem', '.+.pem')),
     \
     ('allow_gzip_atv'              , ('False', '((True)|(False))')),
